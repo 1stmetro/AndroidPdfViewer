@@ -738,6 +738,18 @@ public class PDFView extends RelativeLayout {
 
         canvas.drawBitmap(renderedBitmap, srcRect, dstRect, paint);
 
+        if (Constants.SHOW_BORDER && documentPageCount>1) {
+            paint.setColor(Constants.BORDER_COLOR);
+            paint.setStrokeWidth(Constants.BORDER_WIDTH);
+            paint.setStyle(Style.STROKE);
+            //Draw marker depending on orientation of pdf.
+            //down left side
+            if(!swipeVertical)canvas.drawLine(0, 20, 0, pageHeight, paint);
+            //across
+            if(swipeVertical)canvas.drawLine(pageWidth, 0, 0, 0, paint);
+            //end of drawing page markers
+        }
+        
         if (Constants.DEBUG_MODE) {
             debugPaint.setColor(part.getUserPage() % 2 == 0 ? Color.RED : Color.BLUE);
             canvas.drawRect(dstRect, debugPaint);
@@ -1100,22 +1112,37 @@ public class PDFView extends RelativeLayout {
         }
     }
 
-    public void fitToWidth(int page) {
+public void fitToWidth(int page, int pageOrientation,boolean BookMode) {
         if (state != State.SHOWN) {
             Log.e(TAG, "Cannot fit, document not rendered yet");
             return;
         }
-        fitToWidth();
+        fitToWidth(pageOrientation,BookMode);
         jumpTo(page);
     }
 
-    public void fitToWidth() {
+    public void fitToWidth(int pageOrientation, boolean BookMode) {
         if (state != State.SHOWN) {
             Log.e(TAG, "Cannot fit, document not rendered yet");
             return;
         }
-        zoomTo(getWidth() / optimalPageWidth);
-        setPositionOffset(0);
+        
+        if (!BookMode) {
+            if (pageOrientation == 0) {
+                int centerPos = getPageAtPositionOffset(0);
+                zoomTo(getWidth() / optimalPageWidth);
+                setPositionOffset(centerPos);
+            } else {
+                int centerPos = getPageAtPositionOffset(0);
+                toRealScale((float) getHeight() / optimalPageHeight);
+                setPositionOffset(centerPos);
+            }
+        }
+        else
+        {
+            //book mode does not require rescaling, otherwise elongated text as becomes stretched, so this option turns off scaling for bookmode.
+        }
+        return;
     }
 
     public int getCurrentPage() {
