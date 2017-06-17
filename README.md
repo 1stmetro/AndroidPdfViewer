@@ -10,6 +10,19 @@ Library for displaying PDF documents on Android, with `animations`, `gestures`, 
 It is based on [PdfiumAndroid](https://github.com/barteksc/PdfiumAndroid) for decoding PDF files. Works on API 11 (Android 3.0) and higher.
 Licensed under Apache License 2.0.
 
+** Fork Updated Code**
+
+Addition code has been added to this fork, that will allow the full customization of page borders, size and colors by setting Constants before loading a PDF into the Viewer.
+
+The fork will add a border on both Horizontal and Vertical page swipes, the border is only in the direction that you would expect it to be, for example swiping horizontaly you wouldnt expect a page border on the top and bottom but to the left and right of the page.
+
+Constants.SHOW_BORDER = false;
+Constants.BORDER_COLOR = 16777215;
+Constants.BORDER_WIDTH = 2;
+Constants.BOOKMODE=false;
+
+(Bookmode was added as when in horizontal bookview the text appears to stretch setting this constant when in this view will remove the stretching of the text)
+
 ## What's new in 2.7.0-beta?
 * Update PdfiumAndroid to 1.6.1, which fixed font rendering (issue #253)
 * Add `.spacing(int)` method to add spacing (in dp) between document pages
